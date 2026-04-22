@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>E-Commerce Agent</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a0f;
+      --surface: #111118;
+      --border: #1e1e2e;
+      --accent: #6366f1;
+      --accent-hover: #5254cc;
+      --text: #e2e8f0;
+      --muted: #64748b;
+      --user-bubble: #6366f1;
+      --agent-bubble: #111118;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* ── Header ── */
+    header {
+      padding: 14px 28px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--surface);
+      flex-shrink: 0;
+    }
+
+    .logo { display: flex; align-items: center; gap: 10px; }
+    .logo-icon {
+      width: 34px; height: 34px;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      border-radius: 9px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem;
+    }
+    .logo-text { font-size: 0.95rem; font-weight: 600; color: #fff; }
+    .logo-sub { font-size: 0.72rem; color: var(--muted); margin-top: 1px; }
+
+    .badge {
+      font-size: 0.7rem;
+      color: #a78bfa;
+      background: rgba(99,102,241,0.12);
+      border: 1px solid rgba(99,102,241,0.25);
+      padding: 3px 10px;
+      border-radius: 9999px;
+      font-weight: 500;
+    }
+
+    /* ── Main ── */
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* ── Empty / Hero ── */
+    #hero {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 24px;
+      gap: 32px;
+    }
+
+    .hero-title {
+      text-align: center;
+    }
+    .hero-title h2 {
+      font-size: 1.9rem;
+      font-weight: 600;
+      background: linear-gradient(135deg, #e2e8f0, #a78bfa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 8px;
+    }
+    .hero-title p {
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      max-width: 680px;
+    }
+
+    .chip {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: #94a3b8;
+      border-radius: 8px;
+      padding: 8px 14px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .chip:hover {
+      background: #1a1a2e;
+      border-color: rgba(99,102,241,0.4);
+      color: #c4b5fd;
+      transform: translateY(-1px);
+    }
+
+    /* ── Chat ── */
+    #chat {
+      flex: 1;
+      overflow-y: auto;
+      padding: 28px 0;
+      display: none;
+      flex-direction: column;
+      gap: 0;
+      scroll-behavior: smooth;
+    }
+
+    #chat::-webkit-scrollbar { width: 4px; }
+    #chat::-webkit-scrollbar-track { background: transparent; }
+    #chat::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+    .message {
+      padding: 16px 28px;
+      display: flex;
+      gap: 14px;
+      max-width: 100%;
+    }
+
+    .message.user {
+      background: transparent;
+      flex-direction: row-reverse;
+    }
+
+    .message.agent {
+      background: rgba(255,255,255,0.015);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .avatar {
+      width: 30px; height: 30px;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.8rem;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .message.user .avatar {
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    }
+
+    .message.agent .avatar {
+      background: linear-gradient(135deg, #0ea5e9, #06b6d4);
+    }
+
+    .content {
+      flex: 1;
+      max-width: 760px;
+      font-size: 0.9rem;
+      line-height: 1.75;
+    }
+
+    .message.user .content {
+      text-align: right;
+      color: #c4b5fd;
+      font-weight: 500;
+    }
+
+    .content h3 {
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: #60a5fa;
+      margin: 16px 0 6px;
+    }
+
+    .content strong { color: #f1f5f9; }
+
+    .content ul, .content ol {
+      padding-left: 20px;
+      margin: 6px 0;
+    }
+
+    .content li { margin: 4px 0; color: #cbd5e1; }
+
+    .content hr {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 12px 0;
+    }
+
+    /* Typing */
+    .typing-dots {
+      display: flex; gap: 5px; align-items: center;
+      padding: 4px 0;
+    }
+    .typing-dots span {
+      width: 6px; height: 6px;
+      background: var(--muted);
+      border-radius: 50%;
+      animation: pulse 1.4s infinite;
+    }
+    .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes pulse {
+      0%, 60%, 100% { opacity: 0.3; transform: scale(1); }
+      30% { opacity: 1; transform: scale(1.2); }
+    }
+
+    /* ── Input ── */
+    .input-wrapper {
+      padding: 16px 28px 20px;
+      background: var(--bg);
+      border-top: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    #hero .input-wrapper {
+      border-top: none;
+      background: transparent;
+      width: 100%;
+      max-width: 680px;
+      padding: 0;
+    }
+
+    .input-box {
+      display: flex;
+      align-items: flex-end;
+      gap: 10px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 10px 10px 10px 16px;
+      transition: border-color 0.2s;
+    }
+
+    .input-box:focus-within {
+      border-color: rgba(99,102,241,0.5);
+      box-shadow: 0 0 0 3px rgba(99,102,241,0.08);
+    }
+
+    textarea {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--text);
+      font-size: 0.9rem;
+      font-family: inherit;
+      resize: none;
+      max-height: 140px;
+      line-height: 1.6;
+      padding: 2px 0;
+    }
+
+    textarea::placeholder { color: var(--muted); }
+
+    #send {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 9px;
+      width: 36px; height: 36px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    #send:hover { background: var(--accent-hover); }
+    #send:active { transform: scale(0.95); }
+    #send:disabled { background: #1e1e2e; cursor: not-allowed; }
+
+    #send svg { width: 16px; height: 16px; fill: #fff; }
+
+    .hint {
+      font-size: 0.7rem;
+      color: var(--muted);
+      text-align: center;
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-icon">🛒</div>
+    <div>
+      <div class="logo-text">Projeto E-Commerce</div>
+    </div>
+  </div>
+  <div class="badge">Gemini 2.5 Flash</div>
+</header>
+
+<main>
+  <!-- Hero (estado inicial) -->
+  <div id="hero">
+    <div class="hero-title">
+      <h2>Como posso ajudar?</h2>
+      <p>Faça perguntas sobre vendas, entregas, avaliações e muito mais</p>
+    </div>
+
+    <div class="chips">
+      <button class="chip" onclick="ask('Quais são os 10 produtos mais vendidos?')">📦 Top 10 produtos</button>
+      <button class="chip" onclick="ask('Receita total por categoria de produto')">💰 Receita por categoria</button>
+      <button class="chip" onclick="ask('Quantidade de pedidos por status')">📊 Pedidos por status</button>
+      <button class="chip" onclick="ask('Percentual de pedidos entregues no prazo por estado')">🚚 Prazo por estado</button>
+      <button class="chip" onclick="ask('Média de avaliação geral dos pedidos')">⭐ Avaliação geral</button>
+      <button class="chip" onclick="ask('Top 10 vendedores com melhor média de avaliação')">🏆 Top vendedores</button>
+      <button class="chip" onclick="ask('Estados com maior volume de pedidos e maior ticket médio')">🗺️ Volume por estado</button>
+      <button class="chip" onclick="ask('Categorias com maior taxa de avaliação negativa')">📉 Avaliações negativas</button>
+    </div>
+
+    <div class="input-wrapper">
+      <div class="input-box">
+        <textarea id="question-hero" rows="1" placeholder="Faça uma pergunta sobre os dados..."></textarea>
+        <button id="send" onclick="sendQuestion()">
+          <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chat -->
+  <div id="chat"></div>
+
+  <!-- Input fixo (aparece após primeira mensagem) -->
+  <div class="input-wrapper" id="bottom-input" style="display:none">
+    <div class="input-box">
+      <textarea id="question-bottom" rows="1" placeholder="Continue a conversa..."></textarea>
+      <button id="send-bottom" onclick="sendQuestion()">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="white"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+      </button>
+    </div>
+    <div class="hint">Enter para enviar · Shift+Enter para nova linha</div>
+  </div>
+</main>
+
+<script>
+  let sessionId = null;
+  let started = false;
+
+  const hero = document.getElementById('hero');
+  const chatEl = document.getElementById('chat');
+  const bottomInput = document.getElementById('bottom-input');
+  const sendBtn = document.getElementById('send');
+  const sendBtnBottom = document.getElementById('send-bottom');
+  const heroTextarea = document.getElementById('question-hero');
+  const bottomTextarea = document.getElementById('question-bottom');
+
+  function activeTextarea() {
+    return started ? bottomTextarea : heroTextarea;
+  }
+
+  function activeSendBtn() {
+    return started ? sendBtnBottom : sendBtn;
+  }
+
+  function setupTextarea(el, sendFn) {
+    el.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendFn(); }
+    });
+    el.addEventListener('input', () => {
+      el.style.height = 'auto';
+      el.style.height = Math.min(el.scrollHeight, 140) + 'px';
+    });
+  }
+
+  setupTextarea(heroTextarea, sendQuestion);
+  setupTextarea(bottomTextarea, sendQuestion);
+
+  function ask(text) {
+    activeTextarea().value = text;
+    sendQuestion();
+  }
+
+  function switchToChat() {
+    if (started) return;
+    started = true;
+    hero.style.display = 'none';
+    chatEl.style.display = 'flex';
+    bottomInput.style.display = 'block';
+    setTimeout(() => bottomTextarea.focus(), 50);
+  }
+
+  function setLoading(on) {
+    sendBtn.disabled = on;
+    sendBtnBottom.disabled = on;
+  }
+
+  function appendMessage(role, html) {
+    const div = document.createElement('div');
+    div.className = `message ${role}`;
+    const icon = role === 'user' ? '👤' : '🤖';
+    div.innerHTML = `<div class="avatar">${icon}</div><div class="content">${html}</div>`;
+    chatEl.appendChild(div);
+    chatEl.scrollTop = chatEl.scrollHeight;
+    return div;
+  }
+
+  function appendTyping() {
+    const div = document.createElement('div');
+    div.className = 'message agent';
+    div.id = 'typing';
+    div.innerHTML = `<div class="avatar">🤖</div><div class="content"><div class="typing-dots"><span></span><span></span><span></span></div></div>`;
+    chatEl.appendChild(div);
+    chatEl.scrollTop = chatEl.scrollHeight;
+  }
+
+  function format(text) {
+    return text
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+      .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+      .replace(/^### (.+)$/gm,'<h3>$1</h3>')
+      .replace(/^---$/gm,'<hr>')
+      .replace(/^\* (.+)$/gm,'<li>$1</li>')
+      .replace(/^(\d+)\.\s(.+)$/gm,'<li>$2</li>')
+      .replace(/\n/g,'<br>');
+  }
+
+  async function sendQuestion() {
+    const ta = activeTextarea();
+    const question = ta.value.trim();
+    if (!question) return;
+
+    switchToChat();
+    setLoading(true);
+    ta.value = '';
+    ta.style.height = 'auto';
+
+    appendMessage('user', format(question));
+    appendTyping();
+
+    try {
+      const res = await fetch('/ask', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question, session_id: sessionId }),
+      });
+      const data = await res.json();
+      sessionId = data.session_id;
+      document.getElementById('typing')?.remove();
+      appendMessage('agent', format(data.answer));
+    } catch {
+      document.getElementById('typing')?.remove();
+      appendMessage('agent', '❌ Erro ao conectar. Verifique se a API está rodando.');
+    } finally {
+      setLoading(false);
+      bottomTextarea.focus();
+    }
+  }
+</script>
+</body>
+</html>

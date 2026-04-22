@@ -1,5 +1,6 @@
 .env
 banco.db
+feedback.json
 __pycache__/
 *.pyc
 .venv/

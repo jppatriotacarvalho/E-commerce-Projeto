@@ -12,8 +12,8 @@ Permite que usuários não técnicos façam perguntas em português natural e re
 
 **1. Clone e instale as dependências**
 ```bash
-git clone https://github.com/seu-usuario/ecommerce-agent.git
-cd ecommerce-agent
+git clone https://github.com/jppatriotacarvalho/E-commerce-Projeto.git
+cd E-commerce-Projeto
 pip install -r requirements.txt
 ```
 
@@ -94,6 +94,7 @@ Pergunta do usuário
 | Banco de Dados | SQLite3 (embutido no Python) |
 | Backend / API | FastAPI + Uvicorn |
 | Interface Web | HTML + CSS + JS puro (sem frameworks) |
+| Gráficos | Matplotlib >= 3.7 |
 | Notebook | Jupyter |
 | Linguagem | Python 3.10+ |
 | Config | python-dotenv |
@@ -130,8 +131,8 @@ O arquivo `banco.db` é um SQLite com 7 tabelas de um sistema de e-commerce:
 
 ```bash
 # 1. Clone o repositório
-git clone https://github.com/seu-usuario/ecommerce-agent.git
-cd ecommerce-agent
+git clone https://github.com/jppatriotacarvalho/E-commerce-Projeto.git
+cd E-commerce-Projeto
 
 # 2. Crie e ative um ambiente virtual (recomendado)
 python -m venv .venv
